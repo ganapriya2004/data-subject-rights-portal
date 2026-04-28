@@ -1,11 +1,12 @@
 package com.internship.tool.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-
 import com.internship.tool.entity.Request;
 import com.internship.tool.repository.RequestRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class RequestService {
@@ -13,12 +14,20 @@ public class RequestService {
     @Autowired
     private RequestRepository repository;
 
-    public Request saveRequest(Request request) {
-        request.setStatus("PENDING");
+    // ✅ CREATE REQUEST
+    public Request createRequest(Request request) {
+        request.setStatus("PENDING"); // default status
         return repository.save(request);
     }
 
-    public List<Request> getAllRequests() {
-        return repository.findAll();
+    // ✅ GET ALL WITH PAGINATION
+    public Page<Request> getAllRequests(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    // ✅ GET BY ID (WITH 404 ERROR)
+    public Request getRequestById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Request not found with id: " + id));
     }
 }

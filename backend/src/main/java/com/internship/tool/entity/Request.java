@@ -1,31 +1,27 @@
 package com.internship.tool.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "request")
 public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name is required")
     private String name;
+
+    @NotBlank(message = "Email is required")
     private String email;
-    private String requestType;
+
     private String status;
 
-    // Constructor
-    public Request() {}
-
-    // Getters and Setters
+    // ✅ Getters & Setters
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -42,14 +38,6 @@ public class Request {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
     }
 
     public String getStatus() {
