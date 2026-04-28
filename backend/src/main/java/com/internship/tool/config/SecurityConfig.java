@@ -10,14 +10,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
+            // Disable CSRF (required for APIs)
             .csrf(csrf -> csrf.disable())
+
+            // Authorization rules
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/api/requests/**"
+                    "/api/auth/**",        // ✅ allow login/register
+                    "/api/requests/**",    // ✅ keep open for now (Day 4 APIs)
+                    "/swagger-ui/**",      // ✅ swagger
+                    "/v3/api-docs/**"      // ✅ swagger docs
                 ).permitAll()
+
+                // Any other API needs authentication
                 .anyRequest().authenticated()
             );
 
