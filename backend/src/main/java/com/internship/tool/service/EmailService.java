@@ -11,37 +11,23 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    // ✅ Email when request is created
+    // EMAIL WHEN REQUEST IS CREATED
     public void sendRequestMail(String toEmail) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(toEmail);
-            message.setSubject("DSR Request Submitted");
-            message.setText("Your request has been successfully submitted and is in PENDING status.");
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("DSR Request Submitted");
+        message.setText("Your data subject request has been successfully submitted and is currently under review.");
 
-            mailSender.send(message);
-
-            System.out.println("✅ Request Email sent to: " + toEmail);
-
-        } catch (Exception e) {
-            System.out.println("❌ Request Email failed: " + e.getMessage());
-        }
+        mailSender.send(message);
     }
 
-    // ✅ Email when request is approved (NEW)
-    public void sendApprovalMail(String toEmail) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(toEmail);
-            message.setSubject("DSR Request Approved");
-            message.setText("Your request has been APPROVED successfully.");
+    // EMAIL WHEN STATUS IS UPDATED
+    public void sendStatusUpdateMail(String toEmail, String status) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("DSR Request Status Update");
+        message.setText("Your request status has been updated to: " + status);
 
-            mailSender.send(message);
-
-            System.out.println("✅ Approval Email sent to: " + toEmail);
-
-        } catch (Exception e) {
-            System.out.println("❌ Approval Email failed: " + e.getMessage());
-        }
+        mailSender.send(message);
     }
 }

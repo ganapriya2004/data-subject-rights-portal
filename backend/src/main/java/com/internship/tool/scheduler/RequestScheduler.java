@@ -19,7 +19,6 @@ public class RequestScheduler {
     @Autowired
     private EmailService emailService;
 
-    // Runs every 60 seconds
     @Scheduled(fixedRate = 60000)
     public void processRequests() {
 
@@ -34,9 +33,8 @@ public class RequestScheduler {
                 req.setStatus("APPROVED");
                 repository.save(req);
 
-                // Send approval email
-                emailService.sendApprovalMail(req.getEmail());
-
+                
+                
                 System.out.println("✅ Approved: " + req.getEmail());
             }
         }

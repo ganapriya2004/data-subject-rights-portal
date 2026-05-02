@@ -15,15 +15,15 @@ public class RequestService {
     private RequestRepository repository;
 
     @Autowired
-    private EmailService emailService;
+    private EmailService emailService; // ✅ ADD THIS
 
-    // ✅ CREATE REQUEST + DEFAULT STATUS + EMAIL
+    // ✅ CREATE REQUEST + SEND EMAIL
     public Request createRequest(Request request) {
         request.setStatus("PENDING"); // default status
 
         Request savedRequest = repository.save(request);
 
-        // send email after saving
+        // 🔥 SEND EMAIL AFTER SAVING
         emailService.sendRequestMail(savedRequest.getEmail());
 
         return savedRequest;
@@ -34,24 +34,9 @@ public class RequestService {
         return repository.findAll(pageable);
     }
 
-    // ✅ GET BY ID (WITH ERROR HANDLING)
+    // ✅ GET BY ID (WITH 404 ERROR)
     public Request getRequestById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Request not found with id: " + id));
-    }
-
-    // ✅ UPDATE STATUS (NEW - DAY 8 MAIN LOGIC)
-    public Request updateStatus(Long id, String status) {
-        Request request = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Request not found with id: " + id));
-
-        request.setStatus(status);
-
-        Request updatedRequest = repository.save(request);
-
-        // 🔥 SEND STATUS UPDATE EMAIL
-        emailService.sendStatusUpdateMail(updatedRequest.getEmail(), status);
-
-        return updatedRequest;
     }
 }
