@@ -1,43 +1,51 @@
 package com.internship.tool.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requests")
 public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String requestType;
 
-    @Column(length = 1000)
-    private String description;
+    private String status;
 
-    @Column(nullable = false)
-    private String status = "PENDING";
+    // GETTERS AND SETTERS
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    public Long getId() {
+        return id;
+    }
 
-    // Getters and Setters
-}
-@PrePersist
-public void onCreate() {
-    this.createdAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
-}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-@PreUpdate
-public void onUpdate() {
-    this.updatedAt = LocalDateTime.now();
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
