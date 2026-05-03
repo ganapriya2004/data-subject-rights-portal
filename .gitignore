@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
@@ -35,3 +36,10 @@ build/
 .env
 target/
 node_modules/
+=======
+.env 
+target/ 
+node_modules/ 
+_pychache__/ 
+chroma_data/ 
+>>>>>>> upstream/main
