@@ -1,6 +1,6 @@
 package com.internship.tool.config;
 
-import com.internship.tool.security.JwtUtil;  // ✅ ADD THIS
+import com.internship.tool.security.JwtUtil;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,6 +29,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // ✅ BYPASS JWT for frontend + public APIs
+        if (path.startsWith("/api/auth") ||
+            path.endsWith(".html") ||
+            path.endsWith(".js") ||
+            path.endsWith(".css") ||
+            path.equals("/") ) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 🔐 JWT Logic for protected APIs
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {

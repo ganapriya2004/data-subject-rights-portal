@@ -1,9 +1,9 @@
 package com.internship.tool.config;
 
-import com.internship.tool.config.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,36 +19,38 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ Disable CSRF (important for APIs)
+            // Disable CSRF (needed for APIs)
             .csrf(csrf -> csrf.disable())
 
-            // ✅ Authorization rules
+            // Authorization rules
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ Allow frontend pages
+                // ✅ Allow all frontend files
                 .requestMatchers(
                         "/",
+                        "/index.html",
                         "/login.html",
                         "/register.html",
                         "/dashboard.html",
-                        "/script.js",
-                        "/style.css"
+                        "/admin.html",
+                        "/**/*.js",
+                        "/**/*.css"
                 ).permitAll()
 
-                // ✅ Allow auth APIs
+                // ✅ Allow authentication APIs
                 .requestMatchers("/api/auth/**").permitAll()
 
-                // 🔒 Everything else requires JWT
+                // 🔒 Everything else requires authentication
                 .anyRequest().authenticated()
             )
 
-            // ✅ Add JWT filter (VERY IMPORTANT)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
-            // ❌ No session (JWT only)
+            // ✅ Stateless session (JWT)
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            );
+            )
+
+            // ✅ Add JWT filter
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
