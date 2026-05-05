@@ -1,152 +1,87 @@
-<!-- Day 16 Update -->
 <!DOCTYPE html>
-
 <html>
 <head>
-    <title>User Dashboard</title>
+<title>User Dashboard</title>
+<style>
+body { margin:0; font-family:'Segoe UI'; background:#f4f6f9; }
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f4f6f9;
-        }
+.sidebar {
+    width:230px; height:100vh;
+    background:#1e293b; color:white;
+    position:fixed; padding:20px;
+}
+.sidebar h2 { margin-bottom:30px; }
+.sidebar a {
+    display:block; color:#cbd5e1;
+    margin:12px 0; text-decoration:none;
+}
+.sidebar a:hover { color:white; }
 
-        .sidebar {
-            width: 220px;
-            height: 100vh;
-            background: #1e293b;
-            color: white;
-            position: fixed;
-            padding: 20px;
-        }
+.main { margin-left:250px; padding:30px; }
 
-        .sidebar a {
-            display: block;
-            color: #cbd5e1;
-            margin: 10px 0;
-            text-decoration: none;
-        }
+.card {
+    background:white; padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
 
-        .sidebar a:hover {
-            color: white;
-        }
+input, textarea {
+    width:100%; padding:10px;
+    margin:10px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
 
-        .main {
-            margin-left: 240px;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-        }
-
-        button {
-            padding: 10px;
-            background: #22c55e;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #1e293b;
-            color: white;
-            padding: 10px;
-        }
-
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            color: white;
-        }
-
-        .pending { background: #f59e0b; }
-        .approved { background: #22c55e; }
-        .rejected { background: #ef4444; }
-    </style>
+button {
+    padding:10px;
+    background:#22c55e;
+    color:white; border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
+<script>
+const user = localStorage.getItem("username");
+
+if (!user) window.location.href="login.html";
+if (user.toLowerCase().includes("admin"))
+    window.location.href="admin.html";
+</script>
+
 <div class="sidebar">
-    <h2>DSR Portal</h2>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="#requests">My Requests</a>
-    <a href="#" onclick="logout()">Logout</a>
+<h2>DSR Portal</h2>
+<a href="dashboard.html">Dashboard</a>
+<a href="#" onclick="logout()">Logout</a>
 </div>
 
 <div class="main">
+<h1>Welcome, <span id="user"></span></h1>
 
-    <h1>User Dashboard</h1>
+<div class="card">
+<h3>Submit Request</h3>
 
-    <!-- Submit -->
-    <div class="card">
-        <h3>Submit Request</h3>
+<input id="type" placeholder="Request Type">
+<textarea id="description" placeholder="Description"></textarea>
 
-        <input type="email" id="email" placeholder="Email" readonly>
-        <input type="text" id="type" placeholder="Request Type">
-        <textarea id="description" placeholder="Description"></textarea>
-
-        <button onclick="submitRequest()">Submit</button>
-    </div>
-
-    <!-- Requests -->
-    <div class="card" id="requests">
-        <h3>My Requests</h3>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="requestTable"></tbody>
-        </table>
-    </div>
-
+<button onclick="submitRequest()">Submit</button>
+</div>
 </div>
 
 <script>
-    if (!localStorage.getItem("email")) {
-    window.location.href = "login.html";
+document.getElementById("user").innerText =
+    localStorage.getItem("username");
+
+function logout(){
+    localStorage.clear();
+    window.location.href="login.html";
 }
 
-function getStatusClass(status) {
-    if (status === "APPROVED") return "status approved";
-    if (status === "REJECTED") return "status rejected";
-    return "status pending";
-}
-
-// ✅ Submit Request (FIXED)
 function submitRequest() {
 
-    const email = localStorage.getItem("email");
     const type = document.getElementById("type").value.trim();
     const description = document.getElementById("description").value.trim();
 
@@ -161,78 +96,34 @@ function submitRequest() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            email,
-            type,
-            description,
+            email: localStorage.getItem("username"),
+            requestType: type,                 // ✅ FIXED
+            requestDescription: description,   // ✅ FIXED
             status: "PENDING"
         })
     })
+    .then(res => res.text())
     .then(() => {
-        alert("Request submitted successfully");
-        loadRequests();
+        alert("Request submitted");
+        document.getElementById("type").value = "";
+        document.getElementById("description").value = "";
     })
-    .catch(() => alert("Error submitting request"));
+    .catch(err => console.error(err));
 }
 
-// ✅ Load ONLY user requests
-function loadRequests() {
-
-    const email = localStorage.getItem("email");
-
-    fetch(`http://localhost:8080/api/requests/user/${email}`)
-    .then(res => res.json())
-    .then(data => {
-
-        const table = document.getElementById("requestTable");
-        table.innerHTML = "";
-
-        if (data.length === 0) {
-            table.innerHTML = "<tr><td colspan='5'>No requests found</td></tr>";
-            return;
-        }
-
-        data.forEach(req => {
-            table.innerHTML += `
-                <tr>
-                    <td>${req.id}</td>
-                    <td>${req.email}</td>
-                    <td>${req.type || "N/A"}</td>
-                    <td>${req.description || "N/A"}</td>
-                    <td>
-                        <span class="${getStatusClass(req.status)}">
-                            ${req.status}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        });
-    });
+function showToast(msg){
+    const t=document.createElement("div");
+    t.innerText=msg;
+    t.style.position="fixed";
+    t.style.bottom="20px";
+    t.style.right="20px";
+    t.style.background="#22c55e";
+    t.style.color="white";
+    t.style.padding="10px";
+    t.style.borderRadius="5px";
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),3000);
 }
-function loadUserRequests() {
-    const email = localStorage.getItem("email");
-
-    fetch(`http://localhost:8080/api/requests/user/${email}`)
-        .then(res => res.json())
-        .then(data => {
-            console.log(data);
-        });
-}
-
-window.onload = loadUserRequests;
-
-// ✅ Logout
-function logout() {
-    localStorage.removeItem("email");
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
-}
-
-// ✅ Auto-fill email
-document.getElementById("email").value = localStorage.getItem("email");
-
-// Initial load
-loadRequests();
-
 </script>
 
 </body>
