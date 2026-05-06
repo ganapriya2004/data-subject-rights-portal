@@ -10,34 +10,56 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/requests")
-@CrossOrigin("*")
+
+@CrossOrigin(origins = "*")
 public class RequestController {
 
     @Autowired
     private RequestRepository requestRepository;
 
-    // ✅ GET ALL REQUESTS
-    @GetMapping("/user/{email}")
-    public List<Request> getUserRequests(@PathVariable String email) {
-        return requestRepository.findByEmail(email);
+
+
+    // ================= GET ALL REQUESTS =================
+
+    @GetMapping
+    public List<Request> getAllRequests() {
+
+        return requestRepository.findAll();
     }
 
-    // ✅ CREATE REQUEST
+
+
+    // ================= CREATE REQUEST =================
+
     @PostMapping
-    public Request createRequest(@RequestBody Request request) {
+    public Request createRequest(
+            @RequestBody Request request
+    ) {
+
         request.setStatus("PENDING");
+
         return requestRepository.save(request);
     }
 
-    // ✅ UPDATE STATUS (APPROVE / REJECT)
-    @PutMapping("/{id}")
-    public Request updateStatus(@PathVariable Long id, @RequestParam String status) {
 
-        Request req = requestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
 
-        req.setStatus(status);
+    // ================= UPDATE STATUS =================
 
-        return requestRepository.save(req);
+    @PutMapping("/updateStatus/{id}")
+    public Request updateStatus(
+
+            @PathVariable Long id,
+
+            @RequestParam String status
+    ) {
+
+        Request request =
+                requestRepository
+                .findById(id)
+                .orElseThrow();
+
+        request.setStatus(status);
+
+        return requestRepository.save(request);
     }
 }

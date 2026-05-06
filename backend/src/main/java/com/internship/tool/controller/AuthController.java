@@ -2,60 +2,59 @@ package com.internship.tool.controller;
 
 import com.internship.tool.entity.User;
 import com.internship.tool.repository.UserRepository;
-import com.internship.tool.security.JwtUtil;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin("*")
+
+// ✅ VERY IMPORTANT
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    // ✅ REGISTER
+    // ================= REGISTER =================
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        try {
-            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-                return ResponseEntity.badRequest().body("User already exists");
-            }
-
-            user.setRole("USER");
-            userRepository.save(user);
-
-            return ResponseEntity.ok("User registered successfully");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Registration failed");
-        }
-    }
-
-    // ✅ LOGIN
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public String register(@RequestBody User user) {
 
         Optional<User> existingUser =
                 userRepository.findByUsername(user.getUsername());
 
-        if (existingUser.isPresent()
-                && existingUser.get().getPassword().equals(user.getPassword())) {
-
-            // ✅ ONLY ONE PARAMETER (IMPORTANT)
-            String token = jwtUtil.generateToken(user.getUsername());
-
-            return ResponseEntity.ok(token);
+        if (existingUser.isPresent()) {
+            return "Username already exists";
         }
 
-        return ResponseEntity.status(401).body("Invalid credentials");
+        // SET ROLE
+        if (user.getUsername().equalsIgnoreCase("admin")) {
+            user.setRole("ADMIN");
+        } else {
+            user.setRole("USER");
+        }
+
+        userRepository.save(user);
+
+        return "User registered successfully";
+    }
+
+    // ================= LOGIN =================
+    @PostMapping("/login")
+    public String login(@RequestBody User loginUser) {
+
+        Optional<User> user =
+                userRepository.findByUsername(loginUser.getUsername());
+
+        if (user.isPresent()
+                &&
+                user.get().getPassword()
+                        .equals(loginUser.getPassword())) {
+
+            return "LOGIN_SUCCESS";
+        }
+
+        throw new RuntimeException("Invalid credentials");
     }
 }

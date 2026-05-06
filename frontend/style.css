@@ -1,0 +1,61 @@
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* LOGIN PAGE */
+
+.login-body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#1e293b,#2563eb);
+}
+
+.auth-box{
+    width:350px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.auth-box h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.auth-box input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+
+.auth-box button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#2563eb;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.switch-text{
+    margin-top:15px;
+    text-align:center;
+}
+
+.switch-text span{
+    color:#2563eb;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.hidden{
+    display:none;
+}

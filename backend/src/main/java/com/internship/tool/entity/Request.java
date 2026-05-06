@@ -3,6 +3,7 @@ package com.internship.tool.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "requests")
 public class Request {
 
     @Id
@@ -11,12 +12,13 @@ public class Request {
 
     private String email;
 
-    private String requestType;          // ✅ correct field
-    private String requestDescription;   // ✅ correct field
+    private String requestType;
+
+    private String description;
 
     private String status;
 
-    // ✅ GETTERS & SETTERS
+    // ================= GETTERS & SETTERS =================
 
     public Long getId() {
         return id;
@@ -42,12 +44,12 @@ public class Request {
         this.requestType = requestType;
     }
 
-    public String getRequestDescription() {
-        return requestDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setRequestDescription(String requestDescription) {
-        this.requestDescription = requestDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getStatus() {

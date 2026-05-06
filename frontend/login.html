@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>DSR Portal</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+<body class="login-body">
+
+
+    <!-- LOGIN BOX -->
+    <div class="auth-box"
+         id="loginBox">
+
+        <h2>Login</h2>
+
+        <input
+            type="text"
+            id="loginUsername"
+            placeholder="Enter Username"
+        >
+
+        <input
+            type="password"
+            id="loginPassword"
+            placeholder="Enter Password"
+        >
+
+        <button onclick="login()">
+            Login
+        </button>
+
+        <p class="switch-text">
+
+            New user?
+
+            <span onclick="showRegister()">
+                Register here
+            </span>
+
+        </p>
+
+    </div>
+
+
+
+    <!-- REGISTER BOX -->
+    <div class="auth-box hidden"
+         id="registerBox">
+
+        <h2>Create Account</h2>
+
+        <input
+            type="text"
+            id="regUsername"
+            placeholder="Enter Username"
+        >
+
+        <input
+            type="password"
+            id="regPassword"
+            placeholder="Enter Password"
+        >
+
+        <button onclick="register()">
+            Register
+        </button>
+
+        <p class="switch-text">
+
+            Already have account?
+
+            <span onclick="showLogin()">
+                Login
+            </span>
+
+        </p>
+
+    </div>
+
+
+    <!-- SCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+</html>
